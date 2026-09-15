@@ -34,6 +34,30 @@ export function isNullPtr(value: NativePtr | null | undefined): value is null | 
   return value === null || value === undefined || (value as bigint) === 0n
 }
 
+let cachedHideConsole: (() => void) | undefined
+
+/**
+ * Hide the current console window on Windows to prevent popping up console windows.
+ */
+export function hideCurrentConsoleWindow(): void {
+  try {
+    if (process.platform !== 'win32') return
+    if (cachedHideConsole === undefined) {
+      const koffi = requireKoffi()
+      const { PVOID } = win32Types()
+      const kernel32 = koffi.load('kernel32.dll')
+      const user32 = koffi.load('user32.dll')
+      const GetConsoleWindow = kernel32.func('GetConsoleWindow', PVOID, [])
+      const ShowWindow = user32.func('ShowWindow', 'int', [PVOID, 'int'])
+      cachedHideConsole = () => {
+        const hwnd = GetConsoleWindow() as NativePtr | null
+        if (!isNullPtr(hwnd)) ShowWindow(hwnd, 0)
+      }
+    }
+    cachedHideConsole()
+  } catch {}
+}
+
 /** STARTUPINFOW fields used by inherited or piped stdio launches. */
 export interface StartupInfoInput {
   cb: number
@@ -328,6 +352,7 @@ export function extendWin32ProcessBindings<Extension extends object>(
  * @returns shared Win32 process, stdio, and Job operations.
  */
 export function loadWin32ProcessBindings(): CurrentTokenProcessBindings {
+  hideCurrentConsoleWindow()
   return bindings()
 }
 /* v8 ignore stop */

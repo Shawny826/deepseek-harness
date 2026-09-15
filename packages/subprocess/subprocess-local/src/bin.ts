@@ -2,6 +2,11 @@
 
 import { consumeRunnerSelection } from './runner-launch.ts'
 import { reportSpawnRunnerFailure, runSpawnRunner } from './spawn-runner.ts'
+import { hideCurrentConsoleWindow } from '@deepseek-ai/dsh-win32-process'
+
+if (process.platform === 'win32') {
+  hideCurrentConsoleWindow?.()
+}
 
 /**
  * Run a selector already removed by a packaging bootstrap.

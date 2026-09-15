@@ -11,6 +11,7 @@ import {
   decodePtr,
   decodeUint32,
   encodeStartupInfo,
+  hideCurrentConsoleWindow,
   isNullPtr,
   throwLastError,
   throwWin32,
@@ -417,6 +418,7 @@ function spawnJobProcess(
   createName: 'CreateProcessAsUserW' | 'CreateProcessW',
   create: (startupInfo: NativePtr, processInfo: NativePtr) => number,
 ): SpawnedJobProcess {
+  hideCurrentConsoleWindow()
   const job = createKillOnCloseJob(api)
   const enabled: NativePtr[] = []
   let startupInfo: NativePtr | undefined

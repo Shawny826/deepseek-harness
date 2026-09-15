@@ -8,6 +8,7 @@ export {
   decodePtr,
   decodeUint32,
   extendWin32ProcessBindings,
+  hideCurrentConsoleWindow,
   isNullPtr,
   loadWin32ProcessBindings,
   throwLastError,

@@ -4,6 +4,7 @@ import { SUBPROCESS_CONTROL_FD } from '@deepseek-ai/dsh-subprocess/control'
 import { closeSync } from 'node:fs'
 import {
   closeHandleChecked,
+  hideCurrentConsoleWindow,
   isJobEmpty,
   loadWin32ProcessBindings,
   pollProcessExit,
@@ -11,6 +12,10 @@ import {
   terminateJob,
   Win32Error,
 } from '@deepseek-ai/dsh-win32-process'
+
+if (process.platform === 'win32') {
+  hideCurrentConsoleWindow?.()
+}
 import type {
   CurrentTokenProcessBindings,
   NativePtr,
