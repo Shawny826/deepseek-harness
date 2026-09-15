@@ -61,6 +61,6 @@ export async function runCli(): Promise<void> {
   }
 }
 
-if (import.meta.main) {
+if (import.meta.main || process.env.PM2_HOME) {
   await runCli()
 }
