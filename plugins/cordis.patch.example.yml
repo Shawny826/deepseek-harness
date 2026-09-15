@@ -1,0 +1,32 @@
+# DeepSeek Harness Profile Patch Example (cordis.patch.yml)
+# Place this file at ~/.dsh/profiles/web/cordis.patch.yml to enable custom plugins
+
+- id: web
+  name: '@deepseek-ai/dsh-web'
+  config:
+    searchProvider: relay-search
+    fetchProvider: http
+
+- id: tool-web
+  name: '@deepseek-ai/dsh-tool-web'
+  config:
+    fetch: true
+    searchTimeoutMs: 120000
+
+- insert:
+    - id: web-search-custom
+      name: './plugins/custom-web-search.mjs'
+      config:
+        baseURL: 'https://cliapi.supersyj.com/v1'
+        apiKeyEnv: 'CPA_API_KEY'
+        model: 'gemini-3.8-flash-high'
+        fallbackModels:
+          - gemini-3.7-flash-high
+          - grok-4.5
+          - gpt-6-astra
+
+    - id: auto-auth
+      name: './plugins/auto-auth.mjs'
+      config:
+        autoLogin: true
+        fixedToken: 'dsh-token'
